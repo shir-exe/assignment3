@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: focus-flow-mongo
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-mongouser}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-mongopass}
+      MONGO_INITDB_DATABASE: ${DATABASE_NAME:-focusflow}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - focus_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: focus-flow-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=${MONGO_URI:-mongodb://mongouser:mongopass@mongo:27017/focusflow?authSource=admin}
+      - DATABASE_NAME=${DATABASE_NAME:-focusflow}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - focus_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: focus-flow-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - backend
+    networks:
+      - focus_network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  focus_network:
+    driver: bridge
