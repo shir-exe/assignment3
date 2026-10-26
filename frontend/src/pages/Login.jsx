@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Activity, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
+import { ShieldAlert, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 
 export const Login = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -18,7 +18,7 @@ export const Login = () => {
 
     try {
       await login({ username_or_email: usernameOrEmail, password });
-      navigate('/library');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.detail || 'שגיאה בהתחברות. אנא בדקי/בדוק את הפרטים.');
     } finally {
@@ -27,54 +27,63 @@ export const Login = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2rem 1rem'
-    }}>
-      <div className="glass-panel" style={{
-        maxWidth: '440px',
-        width: '100%',
-        padding: '2.5rem 2rem',
-        textAlign: 'center'
-      }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1rem',
+      }}
+    >
+      <div
+        className="glass-panel"
+        style={{
+          maxWidth: '440px',
+          width: '100%',
+          padding: '2.5rem 2rem',
+          textAlign: 'center',
+        }}
+      >
         {/* Brand Icon */}
-        <div style={{
-          width: '54px',
-          height: '54px',
-          borderRadius: '16px',
-          background: 'var(--accent-gradient)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1.5rem',
-          boxShadow: 'var(--accent-glow)'
-        }}>
-          <Activity size={32} color="#ffffff" />
+        <div
+          style={{
+            width: '58px',
+            height: '58px',
+            borderRadius: '16px',
+            background: 'linear-gradient(135deg, #ef4444 0%, #f97316 50%, #6366f1 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+            boxShadow: '0 0 25px rgba(239, 68, 68, 0.4)',
+          }}
+        >
+          <ShieldAlert size={34} color="#ffffff" />
         </div>
 
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.4rem' }}>
-          התחברות ל-<span className="text-gradient">FocusFlow</span>
+        <h1 style={{ fontSize: '1.85rem', fontWeight: 900, marginBottom: '0.4rem' }}>
+          Drive<span style={{ color: '#f87171' }}>Alert</span>
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-          מערכת מעקב קשב ומדידת ריכוז חכמה בזמן אמת
+          מערכת חכמה לניטור ערנות נהגים ומניעת הסחת דעת בזמן אמת
         </p>
 
         {error && (
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            color: '#f87171',
-            padding: '0.75rem',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '0.85rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            marginBottom: '1.25rem'
-          }}>
+          <div
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#f87171',
+              padding: '0.75rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginBottom: '1.25rem',
+            }}
+          >
             <AlertCircle size={18} />
             <span>{error}</span>
           </div>
@@ -93,13 +102,16 @@ export const Login = () => {
                 value={usernameOrEmail}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
               />
-              <User size={18} style={{
-                position: 'absolute',
-                left: '0.8rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-muted)'
-              }} />
+              <User
+                size={18}
+                style={{
+                  position: 'absolute',
+                  left: '0.8rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-muted)',
+                }}
+              />
             </div>
           </div>
 
@@ -115,13 +127,16 @@ export const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Lock size={18} style={{
-                position: 'absolute',
-                left: '0.8rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-muted)'
-              }} />
+              <Lock
+                size={18}
+                style={{
+                  position: 'absolute',
+                  left: '0.8rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-muted)',
+                }}
+              />
             </div>
           </div>
 
@@ -129,17 +144,29 @@ export const Login = () => {
             type="submit"
             className="btn-primary"
             disabled={loading}
-            style={{ width: '100%', justifyContent: 'center', marginTop: '1rem', padding: '0.8rem' }}
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              marginTop: '1rem',
+              padding: '0.85rem',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+            }}
           >
-            <span>{loading ? 'מתחבר...' : 'כניסה למערכת'}</span>
+            <span>{loading ? 'מתחבר למערכת...' : 'כניסה למערכת'}</span>
             <ArrowRight size={18} />
           </button>
         </form>
 
-        <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
+        <div
+          style={{
+            marginTop: '2rem',
+            borderTop: '1px solid var(--border-subtle)',
+            paddingTop: '1.25rem',
+          }}
+        >
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            עדיין אין לך חשבון?{' '}
-            <Link to="/register" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
+            עדיין אין לך פרופיל נהג?{' '}
+            <Link to="/register" style={{ color: '#f87171', fontWeight: 600 }}>
               הרשמה מהירה כאן
             </Link>
           </p>
@@ -148,3 +175,5 @@ export const Login = () => {
     </div>
   );
 };
+
+export default Login;

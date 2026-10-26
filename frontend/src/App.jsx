@@ -4,8 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-import { Library } from './pages/Library';
-import { Session } from './pages/Session';
+import { Dashboard } from './pages/Dashboard';
+import { DriveView } from './pages/DriveView';
 import { History } from './pages/History';
 
 // Route guard requiring authenticated user
@@ -14,14 +14,17 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'var(--text-secondary)'
-      }}>
-        טוען נתוני משתמש...
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--text-secondary)',
+          background: 'var(--bg-main)',
+        }}
+      >
+        טוען נתוני נהג...
       </div>
     );
   }
@@ -43,10 +46,23 @@ export const App = () => {
 
               {/* Protected Routes */}
               <Route
-                path="/library"
+                path="/dashboard"
                 element={
                   <ProtectedRoute>
-                    <Library />
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/library"
+                element={<Navigate to="/dashboard" replace />}
+              />
+
+              <Route
+                path="/drive/:id"
+                element={
+                  <ProtectedRoute>
+                    <DriveView />
                   </ProtectedRoute>
                 }
               />
@@ -54,10 +70,11 @@ export const App = () => {
                 path="/session/:id"
                 element={
                   <ProtectedRoute>
-                    <Session />
+                    <DriveView />
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="/history"
                 element={
@@ -67,8 +84,8 @@ export const App = () => {
                 }
               />
 
-              {/* Fallback / Default */}
-              <Route path="*" element={<Navigate to="/library" replace />} />
+              {/* Default Fallback */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>
         </div>

@@ -5,20 +5,20 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('focusflow_user');
+    const saved = localStorage.getItem('drivealert_user') || localStorage.getItem('focusflow_user');
     return saved ? JSON.parse(saved) : null;
   });
-  const [token, setToken] = useState(() => localStorage.getItem('focusflow_token'));
+  const [token, setToken] = useState(() => localStorage.getItem('drivealert_token') || localStorage.getItem('focusflow_token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initAuth = async () => {
-      const storedToken = localStorage.getItem('focusflow_token');
+      const storedToken = localStorage.getItem('drivealert_token') || localStorage.getItem('focusflow_token');
       if (storedToken) {
         try {
           const freshUser = await authService.getMe();
           setUser(freshUser);
-          localStorage.setItem('focusflow_user', JSON.stringify(freshUser));
+          localStorage.setItem('drivealert_user', JSON.stringify(freshUser));
         } catch (err) {
           console.warn('Session expired or invalid token:', err);
           logout();
@@ -32,8 +32,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const data = await authService.login(credentials);
-    localStorage.setItem('focusflow_token', data.access_token);
-    localStorage.setItem('focusflow_user', JSON.stringify(data.user));
+    localStorage.setItem('drivealert_token', data.access_token);
+    localStorage.setItem('drivealert_user', JSON.stringify(data.user));
     setToken(data.access_token);
     setUser(data.user);
     return data.user;
@@ -41,22 +41,31 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     const data = await authService.register(userData);
-    localStorage.setItem('focusflow_token', data.access_token);
-    localStorage.setItem('focusflow_user', JSON.stringify(data.user));
+    localStorage.setItem('drivealert_token', data.access_token);
+    localStorage.setItem('drivealert_user', JSON.stringify(data.user));
     setToken(data.access_token);
     setUser(data.user);
     return data.user;
   };
 
-  const logout = () => {
-    localStorage.removeItem('focusflow_token');
-    localStorage.removeItem('focusflow_user');
+  const logout = async () => {
+    await authService.logout();
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loading, isAuthenticated: !!user }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        register,
+        logout,
+        loading,
+        isAuthenticated: !!user,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -69,3 +78,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export default AuthContext;

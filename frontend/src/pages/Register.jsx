@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Activity, Mail, Lock, User, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, AlertCircle } from 'lucide-react';
 import { ATTENTION_PROFILES } from '../utils/attentionProfiles';
 
 export const Register = () => {
@@ -28,7 +28,7 @@ export const Register = () => {
 
     try {
       await register(formData);
-      navigate('/library');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.detail || 'שגיאה ביצירת החשבון. אנא בדקי/בדוק את הנתונים.');
     } finally {
@@ -37,54 +37,63 @@ export const Register = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2.5rem 1rem'
-    }}>
-      <div className="glass-panel" style={{
-        maxWidth: '520px',
-        width: '100%',
-        padding: '2.5rem 2rem'
-      }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2.5rem 1rem',
+      }}
+    >
+      <div
+        className="glass-panel"
+        style={{
+          maxWidth: '520px',
+          width: '100%',
+          padding: '2.5rem 2rem',
+        }}
+      >
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
-          <div style={{
-            width: '54px',
-            height: '54px',
-            borderRadius: '16px',
-            background: 'var(--accent-gradient)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 1.25rem',
-            boxShadow: 'var(--accent-glow)'
-          }}>
-            <Activity size={32} color="#ffffff" />
+          <div
+            style={{
+              width: '58px',
+              height: '58px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #ef4444 0%, #f97316 50%, #6366f1 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.25rem',
+              boxShadow: '0 0 25px rgba(239, 68, 68, 0.4)',
+            }}
+          >
+            <ShieldAlert size={34} color="#ffffff" />
           </div>
 
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.4rem' }}>
-            יצירת חשבון חדש ב-<span className="text-gradient">FocusFlow</span>
+          <h1 style={{ fontSize: '1.85rem', fontWeight: 900, marginBottom: '0.4rem' }}>
+            הרשמה ל-<span style={{ color: '#f87171' }}>DriveAlert</span>
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            הצטרפו לחוויית למידה מותאמת אישית מבוססת בינה מלאכותית
+            הצטרפו למערכת ניטור בטיחות נהיגה ומניעת עייפות והסחת דעת
           </p>
         </div>
 
         {error && (
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            color: '#f87171',
-            padding: '0.75rem',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '0.85rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            marginBottom: '1.25rem'
-          }}>
+          <div
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#f87171',
+              padding: '0.75rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginBottom: '1.25rem',
+            }}
+          >
             <AlertCircle size={18} />
             <span>{error}</span>
           </div>
@@ -92,7 +101,7 @@ export const Register = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">שם מלא</label>
+            <label className="form-label">שם הנהג/ת המלא</label>
             <input
               type="text"
               name="full_name"
@@ -111,7 +120,7 @@ export const Register = () => {
                 required
                 name="username"
                 className="form-input"
-                placeholder="israel12"
+                placeholder="driver_01"
                 value={formData.username}
                 onChange={handleChange}
               />
@@ -123,7 +132,7 @@ export const Register = () => {
                 required
                 name="email"
                 className="form-input"
-                placeholder="user@example.com"
+                placeholder="driver@example.com"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -146,7 +155,7 @@ export const Register = () => {
 
           {/* Attention Profile Selection */}
           <div className="form-group" style={{ marginTop: '0.5rem' }}>
-            <label className="form-label">פרופיל קשב מועדף</label>
+            <label className="form-label">פרופיל רגישות התרעות</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               {Object.values(ATTENTION_PROFILES).map((prof) => (
                 <label
@@ -157,14 +166,16 @@ export const Register = () => {
                     gap: '0.8rem',
                     padding: '0.75rem 1rem',
                     borderRadius: 'var(--radius-sm)',
-                    border: formData.preferred_profile === prof.id
-                      ? '1px solid var(--accent-primary)'
-                      : '1px solid var(--border-subtle)',
-                    background: formData.preferred_profile === prof.id
-                      ? 'rgba(99, 102, 241, 0.12)'
-                      : 'rgba(15, 23, 42, 0.4)',
+                    border:
+                      formData.preferred_profile === prof.id
+                        ? '1px solid #ef4444'
+                        : '1px solid var(--border-subtle)',
+                    background:
+                      formData.preferred_profile === prof.id
+                        ? 'rgba(239, 68, 68, 0.12)'
+                        : 'rgba(15, 23, 42, 0.4)',
                     cursor: 'pointer',
-                    transition: 'var(--transition-smooth)'
+                    transition: 'var(--transition-smooth)',
                   }}
                 >
                   <input
@@ -173,7 +184,7 @@ export const Register = () => {
                     value={prof.id}
                     checked={formData.preferred_profile === prof.id}
                     onChange={handleChange}
-                    style={{ accentColor: 'var(--accent-primary)' }}
+                    style={{ accentColor: '#ef4444' }}
                   />
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#ffffff' }}>
@@ -192,17 +203,30 @@ export const Register = () => {
             type="submit"
             className="btn-primary"
             disabled={loading}
-            style={{ width: '100%', justifyContent: 'center', marginTop: '1.25rem', padding: '0.8rem' }}
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              marginTop: '1.25rem',
+              padding: '0.85rem',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+            }}
           >
-            <span>{loading ? 'יוצר חשבון...' : 'סיום והרשמה'}</span>
+            <span>{loading ? 'יוצר פרופיל נהג...' : 'סיום והרשמה'}</span>
             <CheckCircle2 size={18} />
           </button>
         </form>
 
-        <div style={{ marginTop: '1.75rem', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
+        <div
+          style={{
+            marginTop: '1.75rem',
+            textAlign: 'center',
+            borderTop: '1px solid var(--border-subtle)',
+            paddingTop: '1.25rem',
+          }}
+        >
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            כבר יש לך חשבון?{' '}
-            <Link to="/login" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
+            כבר יש לך פרופיל?{' '}
+            <Link to="/login" style={{ color: '#f87171', fontWeight: 600 }}>
               התחברות כאן
             </Link>
           </p>
@@ -211,3 +235,5 @@ export const Register = () => {
     </div>
   );
 };
+
+export default Register;

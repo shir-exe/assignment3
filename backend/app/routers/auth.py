@@ -1,6 +1,5 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from app.db.database import get_database
 from app.core.security import verify_password, get_password_hash, create_access_token
 from app.core.deps import get_current_user
@@ -83,6 +82,12 @@ async def login(credentials: UserLogin, db=Depends(get_database)):
         is_active=user_doc.get("is_active", True)
     )
     return Token(access_token=access_token, token_type="bearer", user=user_response)
+
+
+@router.post("/logout")
+async def logout():
+    """Logout endpoint - client discards bearer token."""
+    return {"message": "Logged out successfully", "status": "ok"}
 
 
 @router.get("/me", response_model=UserResponse)
