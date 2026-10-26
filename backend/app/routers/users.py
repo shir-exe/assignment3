@@ -14,6 +14,12 @@ class ProfileUpdate(BaseModel):
     preferred_profile: Optional[str] = Field(None, description="standard, high, or relaxed")
 
 
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)):
+    """Explicit /api/users/me endpoint returning current authenticated user profile."""
+    return current_user
+
+
 @router.get("/profile", response_model=UserResponse)
 async def get_profile(current_user: UserResponse = Depends(get_current_user)):
     return current_user
@@ -60,6 +66,7 @@ async def get_user_statistics(
     current_user: UserResponse = Depends(get_current_user),
     db=Depends(get_database)
 ):
+    """Aggregate driving stats strictly for the current authenticated user."""
     pipeline = [
         {"$match": {"user_id": current_user.id}},
         {
@@ -86,9 +93,13 @@ async def get_user_statistics(
         }
     
     data = results[0]
+    avg = data.get("overall_avg_score", 0.0)
+    # Normalized representation if average was stored as 0-1 or 0-100
+    display_avg = round(avg, 2) if avg <= 1.0 else round(avg, 1)
+
     return {
         "total_sessions": data.get("total_sessions", 0),
         "completed_sessions": data.get("completed_sessions", 0),
         "total_watch_seconds": round(data.get("total_watch_seconds", 0.0), 1),
-        "overall_avg_score": round(data.get("overall_avg_score", 0.0), 1)
+        "overall_avg_score": display_avg
     }

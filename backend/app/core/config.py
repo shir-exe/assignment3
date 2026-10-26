@@ -1,18 +1,18 @@
 from typing import List, Union
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "FocusFlow API"
+    PROJECT_NAME: str = "DriveAlert API"
     API_V1_STR: str = "/api"
     
     # Database
-    MONGO_URI: str = "mongodb://mongouser:mongopass@localhost:27017/focusflow?authSource=admin"
-    DATABASE_NAME: str = "focusflow"
+    MONGO_URI: str = "mongodb://mongo:27017/drivealert"
+    DATABASE_NAME: str = "drivealert"
     
     # JWT Authentication
-    JWT_SECRET_KEY: str = "focus_flow_ultra_secure_jwt_secret_key_2025_prod_bootcamp"
+    JWT_SECRET_KEY: str = "drivealert_super_secret_jwt_key_2025_bootcamp_secure"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
     
